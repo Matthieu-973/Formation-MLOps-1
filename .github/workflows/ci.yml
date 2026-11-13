@@ -14,7 +14,11 @@ jobs:
       # À compléter, dans cet ordre :
       # 1. installer Python, dans une version compatible avec pyproject.toml ;
       # 2. installer uv 0.13.5 ;
+      - name: Run installer UV
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
       # 3. installer les dépendances verrouillées ;
+      - name: Run installer les dépendances
+        run: echo "Installer les dépendances" && uv sync --locked
       # 4. vérifier le code avec Ruff (src, tests, docs) ;
       # 5. vérifier la mise en forme sans modifier les fichiers ;
       # 6. lancer les tests ;
