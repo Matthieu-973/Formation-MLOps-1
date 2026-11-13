@@ -11,27 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+      # À compléter, dans cet ordre :
+      # 1. installer Python, dans une version compatible avec pyproject.toml ;
       - name: Set up Python
         uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.15"
           check-latest: true
+      # 2. installer uv 0.13.5 ;
       - name: Install uv
         uses: astral-sh/setup-uv@v10.3.2
         with:
           version: "0.13.5"
           enable-cache: true
-      # À compléter, dans cet ordre :
-      # 1. installer Python, dans une version compatible avec pyproject.toml ;
-      # 2. installer uv 0.13.5 ;
       - name: Run installer UV
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       # 3. installer les dépendances verrouillées ;
       - name: Run installer les dépendances
         run: echo "Installer les dépendances" && uv sync --locked
       # 4. vérifier le code avec Ruff (src, tests, docs) ;
+      - run: uv run ruff check src tests docs
       # 5. vérifier la mise en forme sans modifier les fichiers ;
+      - run: echo "5. vérifier la mise en forme" && uv run ruff format --check src tests docs
       # 6. lancer les tests ;
+      - run: echo "6. lancer les tests" && uv run python -m pytest
       # 7. construire la documentation, en traitant les avertissements comme des erreurs.
-      - name: Run checks
-        run: echo "CI à compléter" && exit 1
+      - name: docs
+        run: echo "7. construire la documentation" && uv run sphinx-build -W -b html docs docs/_build/html
